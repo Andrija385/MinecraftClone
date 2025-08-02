@@ -8,12 +8,13 @@ private:
 	
 	std::map<std::pair<int, int>, Chunk*> chunks;
 	Noise* noise;
+	int seed;
 
 public:
 	static constexpr int WWIDTH = 16;
 	static constexpr int WLENGTH = 16;
 	static constexpr int RENDER_DISTANCE = 12;
-	World(Noise* noise) : noise(noise) {
+	World(int seed) : seed(seed), noise(new PerlinNoise2D(seed)) {
 		for (int i = 0; i < WWIDTH; ++i) {
 			for (int j = 0; j < WLENGTH; ++j) {
 				chunks[std::make_pair(i, j)] = new Chunk(i, j, noise);

@@ -70,8 +70,7 @@ void Game::initWindow() {
 void Game::loadResources() {
     shader = new Shader("VertexShader.vs", "FragmentShader.fs");
 
-    Noise* noise = new SimpleNoise();
-    world = new World(noise);
+    world = new World(0);
     std::vector<Vertex> vertices = world->generateMesh();
     this->verticesCount = (int)vertices.size();
 
@@ -121,7 +120,6 @@ void Game::run() {
     float lastTime = std::chrono::duration<float>(std::chrono::high_resolution_clock::now().time_since_epoch()).count();
     int frameCounter = 0;
     float fps = 0.0f;
-
     while (!glfwWindowShouldClose(window)) {
         float currentFrame = static_cast<float>(glfwGetTime());
         deltaTime = currentFrame - lastFrame;
@@ -140,7 +138,7 @@ void Game::run() {
             frameCounter = 0;
             lastTime = currentTime;
             //std::cout << "FPS: " << fps << std::endl;
-            //std::cout << "Camera Position: " << this->camera.Position.x<<' '<<this->camera.Position.y<<' '<<this->camera.Position.z << std::endl;   
+            //std::cout << "Camera Position: " << this->camera.Position.x<<' '<<this->camera.Position.y<<' '<<this->camera.Position.z << std::endl;  
         }
         frameCounter++;
 

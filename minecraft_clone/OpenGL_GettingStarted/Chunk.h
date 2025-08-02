@@ -1,6 +1,7 @@
 #pragma once
 #include "Block.h"
 #include "SimpleNoise.h"
+#include "PerlinNoise2D.h"
 
 
 class Chunk

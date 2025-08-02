@@ -1,10 +1,11 @@
 #pragma once
 class Noise
 {
-private:
+protected:
 	int seed;
 public:
+	Noise(int seed) :seed(seed) {}
 	virtual float getNoise(float x, float y) const = 0;
-	void setSeed(int seed) { this->seed = seed; }
+	virtual void setSeed(int seed) { this->seed = seed; }
 };
 

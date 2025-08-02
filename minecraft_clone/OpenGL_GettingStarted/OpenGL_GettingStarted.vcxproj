@@ -134,6 +134,7 @@
     <ClCompile Include="Chunk.cpp" />
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Noise.cpp" />
+    <ClCompile Include="PerlinNoise2D.cpp" />
     <ClCompile Include="Proba.cpp" />
     <ClCompile Include="SimpleNoise.cpp" />
     <ClCompile Include="stb_image.cpp" />
@@ -145,6 +146,7 @@
     <ClInclude Include="Chunk.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="Noise.h" />
+    <ClInclude Include="PerlinNoise2D.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="SimpleNoise.h" />
     <ClInclude Include="stb_image.h" />
