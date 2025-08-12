@@ -153,6 +153,7 @@
     <ClInclude Include="World.h" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram.cd" />
     <None Include="FragmentShader.fs" />
     <None Include="VertexShader.vs" />
   </ItemGroup>

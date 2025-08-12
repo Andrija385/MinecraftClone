@@ -2,6 +2,7 @@
 #include "Block.h"
 #include "SimpleNoise.h"
 #include "PerlinNoise2D.h"
+#include "glm/glm.hpp"
 
 
 class Chunk
@@ -24,5 +25,13 @@ public:
 	}
 	std::vector<Vertex> generateMesh() const;
 	void appendMesh(std::vector<Vertex>& res) const;
+
+	BlockType getBlockType(glm::ivec3 pos) const {
+		return blocks[pos.x][pos.y][pos.z].getBlockType();
+	}
+
+	bool setBlockType(glm::ivec3 pos, BlockType blockType) {
+		return blocks[pos.x][pos.y][pos.z].setBlockType(blockType);
+	}
 };
 

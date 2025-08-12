@@ -88,5 +88,6 @@
     <None Include="FragmentShader.fs">
       <Filter>Shaders</Filter>
     </None>
+    <None Include="ClassDiagram.cd" />
   </ItemGroup>
 </Project>

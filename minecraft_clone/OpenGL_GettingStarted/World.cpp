@@ -39,3 +39,76 @@ void World::updateChunks(glm::vec2 chunkCoordinates) {
 		}
 	}
 }
+
+RaycastInfo World::Raycast(glm::vec3 position, glm::vec3 direction, float distance)
+{
+	float dt = 0.1f;
+	glm::vec3 step = dt * direction;
+	glm::vec3 current = position;
+	glm::vec3 prev = position;
+	float t = 0.0f;
+
+	while (t <= distance) {
+		BlockType blockType = getBlockType(current);
+		if (blockType != BlockType::AIR) {
+			return { true, blockType ,current, prev, t };
+			//std::cout << (int)blockType << std::endl;
+		}
+		
+
+		prev = current;
+		current = current + step;
+		t = t + dt;
+	}
+
+	return { false, BlockType::AIR, current-step, current-step, distance};
+}
+
+BlockType World::getBlockType(glm::vec3 position) {
+	glm::ivec2 chunkPos = toChunkCoordinates(position);
+	glm::ivec3 blockPosLocal = toBlockLocalCoordinates(position, chunkPos);
+	if (chunks.find({ chunkPos.x, chunkPos.y }) != chunks.end()) {
+		//std::cout << "USO\n";
+		//std::cout << chunkPos.x << ' ' << chunkPos.y << '\n' << blockPos.x << ' ' << blockPos.y << ' ' << blockPos.z << '\n' << blockPosLocal.x << ' ' << blockPosLocal.y << ' ' << blockPosLocal.z << '\n';
+		return chunks[{chunkPos.x, chunkPos.y}]->getBlockType(blockPosLocal);
+	}
+	return BlockType::AIR;
+}
+
+void World::processLeftMouseButton(const Camera& camera){
+	RaycastInfo info = this->Raycast(camera.getPosition(), camera.getLookDirection(), 10.0f);
+	if (info.blockType != BlockType::AIR) {
+		//std::cout << (int)info.blockType << std::endl;
+		//std::cout << info.position.x << ' ' << info.position.y << ' ' << info.position.z << std::endl;
+		this->removeBlockAt(info.position);
+	}
+}
+
+void World::processRightMouseButton(const Camera& camera)
+{
+	RaycastInfo info = this->Raycast(camera.getPosition(), camera.getLookDirection(), 10.0f);
+	if (info.blockType != BlockType::AIR) {
+		//std::cout << (int)info.blockType << std::endl;
+		//std::cout << info.position.x << ' ' << info.position.y << ' ' << info.position.z << std::endl;
+		this->addBlockAt(info.prevPosition);
+	}
+}
+
+bool World::removeBlockAt(glm::vec3 position){
+	glm::ivec2 chunkPos = toChunkCoordinates(position);
+	glm::ivec3 blockPosLocal = toBlockLocalCoordinates(position, chunkPos);
+	if (chunks.find({ chunkPos.x, chunkPos.y }) != chunks.end()) {
+		return chunks[{chunkPos.x, chunkPos.y}]->setBlockType(blockPosLocal,BlockType::AIR);
+	}
+	return false;
+}
+
+bool World::addBlockAt(glm::vec3 position)
+{
+	glm::ivec2 chunkPos = toChunkCoordinates(position);
+	glm::ivec3 blockPosLocal = toBlockLocalCoordinates(position, chunkPos);
+	if (chunks.find({ chunkPos.x, chunkPos.y }) != chunks.end()) {
+		return chunks[{chunkPos.x, chunkPos.y}]->setBlockType(blockPosLocal, BlockType::DIRT);
+	}
+	return false;
+}

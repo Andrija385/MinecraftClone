@@ -163,6 +163,14 @@ void Game::processInput() {
         camera.ProcessKeyboard(UP, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
         camera.ProcessKeyboard(DOWN, deltaTime);
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_LEFT) == GLFW_PRESS){
+        world->processLeftMouseButton(this->camera);
+        this->onLeftMouseButtonPressed();
+    }
+    if (glfwGetMouseButton(window, GLFW_MOUSE_BUTTON_RIGHT) == GLFW_PRESS) {
+        world->processRightMouseButton(this->camera);
+        this->onRightMouseButtonPressed();
+    }
 }
 
 void Game::render() {
@@ -173,9 +181,9 @@ void Game::render() {
     glBindTexture(GL_TEXTURE_2D, textureAtlas);
 
     shader->use();
-    glm::mat4 projection = glm::perspective(glm::radians(camera.Zoom), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1000.0f);
+    glm::mat4 projection = glm::perspective(glm::radians(camera.getZoom()), (float)SCR_WIDTH / (float)SCR_HEIGHT, 0.1f, 1000.0f);
     shader->setMat4("projection", projection);
-    glm::mat4 view = camera.GetViewMatrix();
+    glm::mat4 view = camera.getViewMatrix();
     shader->setMat4("view", view);
     glm::mat4 model = glm::mat4(1.0f);
     shader->setMat4("model", model);
@@ -207,6 +215,7 @@ void Game::mouse_callback(GLFWwindow* window, double xposIn, double yposIn) {
     instance->lastY = ypos;
 
     instance->camera.ProcessMouseMovement(xoffset, yoffset);
+
 }
 
 void Game::scroll_callback(GLFWwindow* window, double xoffset, double yoffset) {
@@ -243,10 +252,46 @@ void Game::onChunkChanged(glm::vec2 chunkCoordinates)
     workerThread.detach();
 }
 
+void Game::onLeftMouseButtonPressed() {
+    if (threadRunning)return;
+    threadRunning = true;
+    workerThread = std::thread([this]() {
+        std::vector<Vertex>generated = this->world->generateMesh();
+
+        {
+            std::lock_guard<std::mutex>lock(this->meshMutex);
+            this->newMesh = std::move(generated);
+            this->meshReady = true;
+        }
+
+        threadRunning = false;
+    });
+    workerThread.detach();
+}
+
+void Game::onRightMouseButtonPressed()
+{
+    if (threadRunning)return;
+    threadRunning = true;
+    workerThread = std::thread([this]() {
+        std::vector<Vertex>generated = this->world->generateMesh();
+
+        {
+            std::lock_guard<std::mutex>lock(this->meshMutex);
+            this->newMesh = std::move(generated);
+            this->meshReady = true;
+        }
+
+        threadRunning = false;
+        });
+    workerThread.detach();
+}
+
 void Game::update() {
     handleChunkChanged();
     handleMeshReady();
 }
+
 void Game::applyMesh(const std::vector<Vertex>& mesh) {
     this->verticesCount = (int)mesh.size();
 
@@ -262,8 +307,6 @@ void Game::handleMeshReady() {
     }
 }
 
-
-
 void Game::updateMesh() {
     std::vector<Vertex> vertices = world->generateMesh();
     this->verticesCount = (int)vertices.size();
@@ -271,3 +314,4 @@ void Game::updateMesh() {
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(Vertex), vertices.data(), GL_STATIC_DRAW);
 }
+

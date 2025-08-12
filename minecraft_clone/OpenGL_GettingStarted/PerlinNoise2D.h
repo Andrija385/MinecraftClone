@@ -41,8 +41,8 @@ public:
 	}
 
 	float getNoise(float x, float y) const override {
-		x /= 64.0f;
-		y /= 64.0f;
+		x /= 16.0f;
+		y /= 16.0f;
 		int X = static_cast<int>(std::floor(x)) & 255;
 		int Y = static_cast<int>(std::floor(y)) & 255;
 
@@ -61,7 +61,7 @@ public:
 		float x2 = lerp(grad(ab, xf, yf - 1), grad(bb, xf - 1, yf - 1), u);
 		float result = lerp(x1, x2, v);
 
-		return (result + 1.0f) / 2.0f * 64.0f; // Normalize to [0, 1]
+		return (result + 1.0f) / 2.0f * 16.0f; // Normalize to [0, 1]
 	}
 };
 

@@ -44,7 +44,7 @@ public:
 	Block() :blockType(BlockType::AIR) {}
 	Block(BlockType blockType) :blockType(blockType) {}
 
-	void setBlockType(BlockType bt) { this->blockType = bt; }
+	bool setBlockType(BlockType bt) { this->blockType = bt; return true; }
 	BlockType getBlockType() const { return this->blockType; }
 
 	std::vector<Vertex> generateFaceMesh(BlockFace face, float x, float y, float z) const;

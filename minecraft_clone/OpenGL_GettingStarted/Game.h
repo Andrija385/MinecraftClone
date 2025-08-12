@@ -14,6 +14,7 @@
 #include "stb_image.h"
 
 
+
 class Game
 {
 public:
@@ -67,5 +68,10 @@ private:
 
 	void handleMeshReady();
 	void applyMesh(const std::vector<Vertex>& mesh);
+
+	void onLeftMouseButtonPressed();
+	void onRightMouseButtonPressed();
+
+	
 };
 

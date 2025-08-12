@@ -35,7 +35,16 @@ public:
 	float MovementSpeed;
 	float MouseSensitivity;
 	float Zoom;
-
+public:
+	glm::vec3 getPosition() const {
+		return Position;
+	}
+	glm::vec3 getLookDirection() const {
+		return glm::normalize(Front);
+	}
+	float getZoom() const {
+		return Zoom;
+	}
 	Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f), float yaw = YAW, float pitch = PITCH) : Front(glm::vec3(0.0f, 0.0f, -1.0f)), MovementSpeed(SPEED), MouseSensitivity(SENSITIVITY), Zoom(ZOOM), ChunkCoordinates(glm::vec2(10000, 10000))
 	{
 		Position = position;
@@ -54,7 +63,7 @@ public:
 		updateCameraVectors();
 	}
 
-	glm::mat4 GetViewMatrix()
+	glm::mat4 getViewMatrix()
 	{
 		return glm::lookAt(Position, Position + Front, Up);
 	}
